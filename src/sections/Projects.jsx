@@ -2,38 +2,37 @@ import { ArrowUpRight, Github } from "lucide-react";
 import { AnimatedBorderButton } from "@/components/AnimatedBorderButton";
 const projects = [
   {
-    title: "Fintech Dashboard",
-    description:
-      "A comprehensive financial analytics platform with real-time data visualization, portfolio management, and AI-powered insights.",
-    image: "/projects/project1.png",
-    tags: ["React", "Typescript", "NodeJS"],
-    link: "#",
-    github: "#",
-  },
-  {
-    title: "E-Commerce Platform",
+    title: "thokmandee",
     description:
       "A full-featured e-commerce solution with inventory management, payment processing, and analytics dashboard.",
-    image: "/projects/project2.png",
-    tags: ["Next.js", "Stripe", "PostgreSQL", "Tailwind"],
+    image: "/projects/thokmande.png",
+    tags: ["Nextjs", "Typescript", "NodeJS"],
     link: "#",
     github: "#",
   },
   {
-    title: "AI Writing Assistant",
-    description:
-      "An intelligent writing tool powered by GPT-4, helping users create better content faster.",
-    image: "/projects/project3.png",
-    tags: ["React", "OpenAI", "Python", "FastAPI"],
+    title: "ILM OVERSEAS",
+    description:"A complete study abroad consultancy platform offering university admissions, visa guidance, scholarship assistance, career counseling, and application support for ambitious international students.",      
+    image: "/projects/imlovrseas.png",
+    tags: ["Next.js",  "Tailwind", "MongoDB"],
     link: "#",
     github: "#",
   },
   {
-    title: "Project Management Tool",
+    title: "qlimbup",
     description:
-      "A collaborative workspace for teams with real-time updates, task tracking, and integrations.",
-    image: "/projects/project4.png",
-    tags: ["Next.js", "Socket.io", "MongoDB", "Redis"],
+      "Create a professional resume quickly and easily, tailored to your skills and career goals. Highlight your strengths, showcase achievements, and stand out to employers in minutes",
+    image: "/projects/project2.2.png",
+    tags: ["React","NextJs", "monorepo"],
+    link: "#",
+    github: "#",
+  },
+  {
+    title: "Prod AI",
+    description:
+      "Comprehensive productivity tools that work together seamlessly, each enhanced by artificial intelligence to help you work smarter.",
+    image: "/projects/prod_AI.png",
+    tags: ["Next.js", "React js" ,"MongoDB" ],
     link: "#",
     github: "#",
   },
@@ -41,7 +40,7 @@ const projects = [
 
 export const Projects = () => {
   return (
-    <section id="projects" className="py-32 relative overflow-hidden">
+    <section id="projects" className="py-20 relative overflow-hidden">
       {/* Bg glows */}
       <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-1/4 left-0 w-64 h-64 bg-highlight/5 rounded-full blur-3xl" />

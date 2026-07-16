@@ -1,45 +1,45 @@
 const experiences = [
   {
-    period: "2022 — Present",
+    period: "2026 — Present",
     role: "Senior Frontend Engineer",
-    company: "Tech Innovators Inc.",
+    company: "Byte Scripters.",
     description:
       "Leading frontend architecture for a suite of fintech products. Implemented micro-frontend architecture, reduced bundle size by 40%, and mentored a team of 5 developers.",
-    technologies: ["React", "TypeScript", "Next.js", "GraphQL"],
+    technologies: ["React", "TypeScript", "Next.js", "Node.js"],
     current: true,
   },
   {
-    period: "2020 — 2022",
+    period: "2025 — 2026",
     role: "Frontend Engineer",
-    company: "Digital Solutions Co.",
+    company: "Code Scrapper.",
     description:
       "Built and maintained multiple React applications for enterprise clients. Introduced automated testing practices that improved code coverage to 85%.",
-    technologies: ["React", "Redux", "Jest", "Cypress"],
+    technologies: ["React", "Redux", "Tailwind css", ],
     current: false,
   },
   {
-    period: "2019 — 2020",
+    period: "2024 - 2025",
     role: "Junior Developer",
-    company: "StartUp Labs",
+    company: "Xemen Technology",
     description:
       "Contributed to the development of a SaaS platform from MVP to production. Collaborated with designers to implement pixel-perfect UI components.",
-    technologies: ["React", "Node.js", "MongoDB", "AWS"],
+    technologies: ["React", "JavaScript" , "MongoDB", ],
     current: false,
   },
-  {
-    period: "2018 — 2019",
-    role: "Freelance Developer",
-    company: "Self-Employed",
-    description:
-      "Delivered custom web solutions for small businesses and startups. Built 15+ websites and applications, handling everything from design to deployment.",
-    technologies: ["JavaScript", "PHP", "WordPress", "MySQL"],
-    current: false,
-  },
+  // {
+  //   period: "2018 — 2019",
+  //   role: "Freelance Developer",
+  //   company: "Self-Employed",
+  //   description:
+  //     "Delivered custom web solutions for small businesses and startups. Built 15+ websites and applications, handling everything from design to deployment.",
+  //   technologies: ["JavaScript", "PHP", "WordPress", "MySQL"],
+  //   current: false,
+  // },
 ];
 
 export const Experience = () => {
   return (
-    <section id="experience" className="py-32 relative overflow-hidden">
+    <section id="experience" className="py-20 relative overflow-hidden">
       <div
         className="absolute top-1/2 left-1/4 w-96
        h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2"

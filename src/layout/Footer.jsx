@@ -1,9 +1,9 @@
 import { Github, Linkedin, Twitter, Heart } from "lucide-react";
 
 const socialLinks = [
-  { icon: Github, href: "#", label: "GitHub" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Twitter, href: "#", label: "Twitter" },
+  { icon: Github, href: "https://github.com/MuhammadQasim479", label: "GitHub" },
+  { icon: Linkedin, href: "https://www.linkedin.com/in/muhammad-qasim-b3b9b82b1/", label: "LinkedIn" },
+  // { icon: Twitter, href: "#", label: "Twitter" },
 ];
 
 const footerLinks = [
@@ -23,10 +23,10 @@ export const Footer = () => {
           {/* Logo & Copyright */}
           <div className="text-center md:text-left">
             <a href="#" className="text-xl font-bold tracking-tight">
-              PM<span className="text-primary">.</span>
+              MQ<span className="text-primary">.</span>
             </a>
             <p className="text-sm text-muted-foreground mt-2">
-              © {currentYear} Pedro Machado. All rights reserved.
+              © {currentYear} Muhammad Qasim. All rights reserved.
             </p>
           </div>
 
@@ -49,6 +49,7 @@ export const Footer = () => {
               <a
                 key={social.label}
                 href={social.href}
+                target="_blank"
                 aria-label={social.label}
                 className="p-2 rounded-full glass hover:bg-primary/10 hover:text-primary transition-all"
               >
