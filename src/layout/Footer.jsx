@@ -1,61 +1,66 @@
-import { Github, Linkedin, Twitter, Heart } from "lucide-react";
+import { ArrowUp } from "lucide-react";
+import { navLinks, profile, socials } from "@/data/portfolio";
 
-const socialLinks = [
-  { icon: Github, href: "https://github.com/MuhammadQasim479", label: "GitHub" },
-  { icon: Linkedin, href: "https://www.linkedin.com/in/muhammad-qasim-b3b9b82b1/", label: "LinkedIn" },
-  // { icon: Twitter, href: "#", label: "Twitter" },
-];
-
-const footerLinks = [
-  { href: "#about", label: "About" },
-  { href: "#projects", label: "Projects" },
-  { href: "#experience", label: "Experience" },
-  { href: "#contact", label: "Contact" },
-];
+const footerLinks = [...navLinks, { id: "contact", label: "Contact" }];
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="py-12 border-t border-border">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          {/* Logo & Copyright */}
+    <footer className="border-t border-border py-12">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="flex flex-col items-center justify-between gap-8 md:flex-row md:items-start">
           <div className="text-center md:text-left">
-            <a href="#" className="text-xl font-bold tracking-tight">
-              MQ<span className="text-primary">.</span>
+            <a
+              href="#top"
+              className="font-mono text-lg font-semibold tracking-tight"
+            >
+              {profile.initials}
+              <span className="text-primary">.</span>
             </a>
-            <p className="text-sm text-muted-foreground mt-2">
-              © {currentYear} Muhammad Qasim. All rights reserved.
+            <p className="mt-2 text-sm text-muted-foreground">
+              © {currentYear} {profile.name}. All rights reserved.
+            </p>
+            <p className="mt-1 font-mono text-xs text-subtle-foreground">
+              Built with React, Vite and Tailwind CSS.
             </p>
           </div>
 
-          {/* Links */}
-          <nav className="flex flex-wrap justify-center gap-6">
-            {footerLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
+          <nav aria-label="Footer">
+            <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+              {footerLinks.map((link) => (
+                <li key={link.id}>
+                  <a
+                    href={`#${link.id}`}
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </nav>
 
-          {/* Social Links */}
-          <div className="flex items-center gap-4">
-            {socialLinks.map((social) => (
+          <div className="flex items-center gap-3">
+            {socials.map((social) => (
               <a
                 key={social.label}
                 href={social.href}
-                target="_blank"
+                target={social.href.startsWith("http") ? "_blank" : undefined}
+                rel="noopener noreferrer"
                 aria-label={social.label}
-                className="p-2 rounded-full glass hover:bg-primary/10 hover:text-primary transition-all"
+                className="rounded-full glass p-2.5 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
               >
-                <social.icon className="w-5 h-5" />
+                <social.icon className="h-4 w-4" aria-hidden="true" />
               </a>
             ))}
+            <a
+              href="#top"
+              aria-label="Back to top"
+              className="rounded-full glass p-2.5 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
+            >
+              <ArrowUp className="h-4 w-4" aria-hidden="true" />
+            </a>
           </div>
         </div>
       </div>

@@ -1,152 +1,158 @@
+import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
-import { useState } from "react";
+import { Reveal } from "@/components/Reveal";
+import { SectionHeading } from "@/components/SectionHeading";
+import { cn } from "@/utils/cn";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { testimonials } from "@/data/portfolio";
 
-const testimonials = [
-  {
-    quote:
-      "Muhammad Qasim is one of the most talented engineers I've worked with. His attention to detail and ability to translate complex requirements into elegant solutions is remarkable.",
-    author: "Sarah Chen",
-    role: "CTO, Tech Innovators Inc.",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-  },
-  {
-    quote:
-      "Working with Muhammad Qasim was a game-changer for our project. He delivered ahead of schedule with code quality that set a new standard for our team.",
-    author: "Michael Rodriguez",
-    role: "Product Manager, Digital Solutions",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
-  },
-  {
-    quote:
-      "Muhammad Qasim expertise in React and TypeScript helped us rebuild our entire frontend in record time. His architectural decisions continue to pay dividends.",
-    author: "Emily Watson",
-    role: "Engineering Lead, StartUp Labs",
-    avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
-  },
-  {
-    quote:
-      "Not only is Muhammad Qasim technically brilliant, but he's also a fantastic communicator and team player. He elevated everyone around him.",
-    author: "David Kim",
-    role: "CEO, Innovation Hub",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-  },
-];
+const AUTOPLAY_MS = 7000;
 
 export const Testimonials = () => {
-  const [activeIdx, setActiveIdx] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
-  const next = () => {
-    setActiveIdx((prev) => (prev + 1) % testimonials.length);
+  const goTo = useCallback((index) => {
+    const count = testimonials.length;
+    setActiveIndex(((index % count) + count) % count);
+  }, []);
+
+  const next = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
+  const previous = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
+
+  // Advances on its own, but stops the moment a pointer or keyboard focus
+  // enters the carousel so it never moves out from under someone reading it.
+  useEffect(() => {
+    if (isPaused || prefersReducedMotion) return;
+    const timer = setInterval(next, AUTOPLAY_MS);
+    return () => clearInterval(timer);
+  }, [isPaused, prefersReducedMotion, next]);
+
+  const onKeyDown = (event) => {
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      next();
+    }
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      previous();
+    }
   };
 
-  const previous = () => {
-    setActiveIdx(
-      (prev) => (prev - 1 + testimonials.length) % testimonials.length
-    );
-  };
+  const active = testimonials[activeIndex];
+
   return (
-    <section id="testimonials" className="py-32 relative overflow-hidden">
+    <section
+      id="testimonials"
+      className="relative scroll-mt-24 overflow-hidden py-24 sm:py-28 md:py-32"
+    >
       <div
-        className="absolute top-1/2 left-1/2
-       w-[800px] h-[800px] bg-primary/5
-        rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.05] blur-[130px]"
       />
-      <div
-        className="container mx-auto 
-      px-6 relative z-10"
-      >
-        {/* Section Header */}
-        <div
-          className="text-center max-w-3xl 
-        mx-auto mb-16"
-        >
-          <span
-            className="text-secondary-foreground 
-          text-sm font-medium tracking-wider 
-          uppercase animate-fade-in"
+
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
+        <SectionHeading
+          eyebrow="What people say"
+          title="Kind words from"
+          accent="amazing people."
+          align="center"
+        />
+
+        <Reveal delay={150} className="mx-auto mt-14 max-w-4xl">
+          <div
+            role="group"
+            aria-roledescription="carousel"
+            aria-label="Testimonials"
+            tabIndex={0}
+            onKeyDown={onKeyDown}
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            onFocus={() => setIsPaused(true)}
+            onBlur={() => setIsPaused(false)}
+            className="relative rounded-3xl"
           >
-            What People Say
-          </span>
-          <h2
-            className="text-4xl md:text-5xl 
-          font-bold mt-4 mb-6 animate-fade-in 
-          animation-delay-100 text-secondary-foreground"
-          >
-            Kind words from{" "}
-            <span
-              className="font-serif italic 
-            font-normal text-white"
-            >
-              amazing people.
-            </span>
-          </h2>
-        </div>
+            <div className="relative rounded-3xl glass p-7 glow-border sm:p-10 md:p-12">
+              <span
+                aria-hidden="true"
+                className="absolute -top-5 left-8 flex h-11 w-11 items-center justify-center rounded-full bg-primary"
+              >
+                <Quote className="h-5 w-5 text-primary-foreground" />
+              </span>
 
-        {/* Testimonial Carousel */}
-        <div className="max-w-4xl mx-auto">
-          <div className="relative">
-            {/* Main Testimonial */}
-            <div className="glass p-8 rounded-3xl md:p-12 glow-border animate-fade-in animation-delay-200">
-              <div className="absolute -top-4 left-8 w-12 h-12 rounded-full bg-primary flex items-center justify-center">
-                <Quote className="w-6 h-6 text-primary-foreground" />
-              </div>
-
-              <blockquote className="text-xl md:text-2xl font-medium leading-relaxed mb-8 pt-4">
-                "{testimonials[activeIdx].quote}"
-              </blockquote>
-
-              <div className="flex items-center gap-4">
-                <img
-                  src={testimonials[activeIdx].avatar}
-                  alt={testimonials[activeIdx].author}
-                  className="w-14 h-14 rounded-full object-cover ring-2 ring-primary/20"
-                />
-                <div>
-                  <div className="font-semibold">
-                    {testimonials[activeIdx].author}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {testimonials[activeIdx].role}
-                  </div>
-                </div>
+              {/* aria-live so the change is announced when it auto-advances. */}
+              <div aria-live="polite" aria-atomic="true">
+                <p className="sr-only">
+                  Testimonial {activeIndex + 1} of {testimonials.length}
+                </p>
+                <blockquote className="pt-5">
+                  <p className="font-serif text-2xl leading-snug text-foreground text-pretty sm:text-3xl md:text-[2.1rem]">
+                    “{active.quote}”
+                  </p>
+                  <footer className="mt-8 flex items-center gap-4">
+                    <img
+                      src={active.avatar}
+                      alt=""
+                      width="56"
+                      height="56"
+                      loading="lazy"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
+                      className="h-14 w-14 rounded-full object-cover ring-2 ring-primary/25"
+                    />
+                    <div>
+                      <cite className="block font-medium not-italic">
+                        {active.author}
+                      </cite>
+                      <span className="font-mono text-xs text-subtle-foreground">
+                        {active.role}
+                      </span>
+                    </div>
+                  </footer>
+                </blockquote>
               </div>
             </div>
 
-            {/* Testimonials Navigation */}
-            <div className="flex items-center justify-center gap-4 mt-8">
+            <div className="mt-8 flex items-center justify-center gap-4">
               <button
-                className="p-3 rounded-full glass hover:bg-primary/10 hover:text-primary transition-all"
+                type="button"
                 onClick={previous}
+                aria-label="Previous testimonial"
+                className="rounded-full glass p-3 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
               >
-                <ChevronLeft />
+                <ChevronLeft className="h-5 w-5" aria-hidden="true" />
               </button>
 
-              <div className="flex gap-2">
-                {testimonials.map((_, idx) => (
+              <div className="flex items-center gap-2">
+                {testimonials.map((testimonial, index) => (
                   <button
-                    onClick={() => setActiveIdx(idx)}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      idx === activeIdx
+                    key={testimonial.id}
+                    type="button"
+                    onClick={() => goTo(index)}
+                    aria-label={`Show testimonial from ${testimonial.author}`}
+                    aria-current={index === activeIndex}
+                    className={cn(
+                      "h-2 rounded-full transition-all duration-300",
+                      index === activeIndex
                         ? "w-8 bg-primary"
-                        : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                    }`}
+                        : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/60"
+                    )}
                   />
                 ))}
               </div>
 
               <button
+                type="button"
                 onClick={next}
-                className="p-3 rounded-full glass hover:bg-primary/10 hover:text-primary transition-all"
+                aria-label="Next testimonial"
+                className="rounded-full glass p-3 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
               >
-                <ChevronRight />
+                <ChevronRight className="h-5 w-5" aria-hidden="true" />
               </button>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

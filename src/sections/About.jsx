@@ -1,98 +1,90 @@
-import { Code2, Lightbulb, Rocket, Users } from "lucide-react";
-
-const highlights = [
-  {
-    icon: Code2,
-    title: "Clean Code",
-    description:
-      "Writing maintainable, scalable code that stands the test of time.",
-  },
-  {
-    icon: Rocket,
-    title: "Performance",
-    description:
-      "Optimizing for speed and delivering lightning-fast user experiences.",
-  },
-  {
-    icon: Users,
-    title: "Collaboration",
-    description: "Working closely with teams to bring ideas to life.",
-  },
-  {
-    icon: Lightbulb,
-    title: "Innovation",
-    description:
-      "Staying ahead with the latest technologies and best practices.",
-  },
-];
+import { Reveal } from "@/components/Reveal";
+import { SectionHeading } from "@/components/SectionHeading";
+import {
+  aboutParagraphs,
+  aboutQuote,
+  highlights,
+  profile,
+} from "@/data/portfolio";
 
 export const About = () => {
   return (
-    <section id="about" className="py-32 relative overflow-hidden">
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left Column */}
-          <div className="space-y-8">
-            <div className="animate-fade-in">
-              <span className="text-secondary-foreground text-sm font-medium tracking-wider uppercase">
-                About Me
-              </span>
+    <section
+      id="about"
+      className="relative scroll-mt-24 overflow-hidden py-24 sm:py-28 md:py-32"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-0 top-1/3 h-72 w-72 rounded-full bg-primary/[0.06] blur-[100px]"
+      />
+
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 items-start gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+          {/* ------------------------------------------------ Left: the story */}
+          <div>
+            <SectionHeading
+              eyebrow="About me"
+              title="Building the future,"
+              accent="one endpoint at a time."
+            />
+
+            <div className="mt-8 flex items-start gap-5">
+              <Reveal className="shrink-0">
+                <img
+                  src="/profile-photo.jpg"
+                  alt={`Portrait of ${profile.name}`}
+                  width="88"
+                  height="88"
+                  loading="lazy"
+                  decoding="async"
+                  className="h-20 w-20 rounded-2xl object-cover ring-1 ring-border sm:h-22 sm:w-22"
+                />
+              </Reveal>
+              <Reveal delay={80} className="pt-1">
+                <p className="font-medium">{profile.name}</p>
+                <p className="font-mono text-xs text-primary">{profile.title}</p>
+                <p className="mt-1 font-mono text-xs text-subtle-foreground">
+                  {profile.location}
+                </p>
+              </Reveal>
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-bold leading-tight animate-fade-in animation-delay-100 text-secondary-foreground">
-              Building the future,
-              <span className="font-serif italic font-normal text-white">
-                {" "}
-                one component at a time.
-              </span>
-            </h2>
-
-            <div className="space-y-4 text-muted-foreground animate-fade-in animation-delay-200">
-              <p>
-                I'm a passionate software engineer with over 2 years of
-                experience crafting digital products that make a difference. My
-                journey started with a curiosity for how things work on the web,
-                and it has evolved into a deep expertise in modern frontend
-                technologies.
-              </p>
-              <p>
-                I specialize in React, Next.js, and TypeScript, building
-                everything from sleek landing pages to complex enterprise
-                applications. My approach combines technical excellence with a
-                keen eye for design and user experience.
-              </p>
-              <p>
-                When I'm not coding, you'll find me exploring new technologies,
-                contributing to open-source projects, or sharing knowledge with
-                the developer community.
-              </p>
+            <div className="mt-8 space-y-5 text-muted-foreground text-pretty">
+              {aboutParagraphs.map((paragraph, index) => (
+                <Reveal key={index} delay={index * 90}>
+                  <p className="leading-relaxed">{paragraph}</p>
+                </Reveal>
+              ))}
             </div>
 
-            <div className="glass rounded-2xl p-6 glow-border animate-fade-in animation-delay-300">
-              <p className="text-lg font-medium italic text-foreground">
-                "My mission is to create digital experiences that are not just
-                functional, but truly delightful — products that users love to
-                use and developers love to maintain."
-              </p>
-            </div>
+            <Reveal delay={120}>
+              <blockquote className="mt-9 rounded-2xl glass p-6 glow-border">
+                <p className="font-serif text-xl italic leading-relaxed text-foreground sm:text-[1.4rem]">
+                  {aboutQuote}
+                </p>
+              </blockquote>
+            </Reveal>
           </div>
 
-          {/* Right Column - Hilights */}
-          <div className="grid sm:grid-cols-2 gap-6">
-            {highlights.map((item, idx) => (
-              <div
-                key={idx}
-                className="glass p-6 rounded-2xl animate-fade-in"
-                style={{ animationDelay: `${(idx + 1) * 100}ms` }}
+          {/* ------------------------------------------- Right: how I work    */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {highlights.map((item, index) => (
+              <Reveal
+                key={item.title}
+                delay={index * 90}
+                className="group card-sheen h-full overflow-hidden rounded-2xl glass p-6 transition-colors duration-500 hover:border-primary/40"
               >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 hover:bg-primary/20">
-                  <item.icon className="w-6 h-6 text-primary" />
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 transition-colors duration-300 group-hover:bg-primary/20">
+                  <item.icon
+                    className="h-5 w-5 text-primary"
+                    aria-hidden="true"
+                  />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="text-base font-semibold">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {item.description}
                 </p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>

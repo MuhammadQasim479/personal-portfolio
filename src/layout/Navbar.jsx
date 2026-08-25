@@ -1,97 +1,164 @@
-import { Button } from "@/components/Button";
-import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/Button";
+import { cn } from "@/utils/cn";
+import { useActiveSection } from "@/hooks/useActiveSection";
+import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
+import { navLinks, profile, socials } from "@/data/portfolio";
 
-
-const navLinks = [
-  { href: "#about", label: "About" },
-  { href: "#projects", label: "Projects" },
-  { href: "#experience", label: "Experience" },
-  { href: "#testimonials", label: "Testimonials" },
-];
+const SECTION_IDS = navLinks.map((link) => link.id);
 
 export const Navbar = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const activeSection = useActiveSection(SECTION_IDS);
 
+  useLockBodyScroll(isMenuOpen);
+
+  // rAF-throttled + passive: the old handler ran setState on every scroll tick.
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    let frame = null;
+
+    const update = () => {
+      frame = null;
+      setIsScrolled(window.scrollY > 40);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    const onScroll = () => {
+      if (frame === null) frame = window.requestAnimationFrame(update);
+    };
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Deferred to the next frame so mounting does not trigger a second render.
+    frame = window.requestAnimationFrame(update);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
+
+  // Escape closes the mobile menu — expected of any overlay.
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") setIsMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isMenuOpen]);
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 transition-all duration-500 ${
-        isScrolled ? "glass-strong py-3" : "bg-transparent py-5"
-      }  z-50`}
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
+        isScrolled || isMenuOpen ? "glass-strong py-3" : "bg-transparent py-5"
+      )}
     >
-      <nav className="container mx-auto px-6 flex items-center justify-between">
+      <nav
+        aria-label="Main"
+        className="container mx-auto flex items-center justify-between px-4 sm:px-10"
+      >
         <a
-          href="#"
-          className="text-xl font-bold tracking-tight hover:text-primary"
+          href="#top"
+          className="font-mono text-lg font-semibold tracking-tight transition-colors hover:text-primary"
         >
-          MQ<span className="text-primary">.</span>
+          {profile.initials}
+          <span className="text-primary">.</span>
         </a>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-1">
-          <div className="glass rounded-full px-2 py-1 flex items-center gap-1">
-            {navLinks.map((link, index) => (
-              <a
-                href={link.href}
-                key={index}
-                className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground rounded-full hover:bg-surface"
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
+        {/* Desktop nav — the active pill is driven by scroll position, so the
+            nav always reflects where the reader actually is. */}
+        <div className="hidden md:block">
+          <ul className="flex items-center gap-1 rounded-full glass px-2 py-1">
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
+                <li key={link.id}>
+                  <a
+                    href={`#${link.id}`}
+                    aria-current={isActive ? "true" : undefined}
+                    className={cn(
+                      "block rounded-full px-4 py-2 text-sm transition-colors duration-300",
+                      isActive
+                        ? "bg-primary/12 text-primary"
+                        : "text-muted-foreground hover:bg-surface hover:text-foreground"
+                    )}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
         </div>
-
-        {/* CTA Button */}
 
         <div className="hidden md:block">
-          <a href="#contact">
-          <Button size="sm">Contact Me</Button>
-          </a>
+          <Button href="#contact" size="sm">
+            Contact me
+          </Button>
         </div>
 
-        {/* Mobile Menu Button */}
         <button
-          className="md:hidden p-2 text-foreground cursor-pointer"
-          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+          type="button"
+          className="p-2 text-foreground md:hidden"
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-menu"
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          onClick={() => setIsMenuOpen((previous) => !previous)}
         >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          {isMenuOpen ? (
+            <X className="h-6 w-6" aria-hidden="true" />
+          ) : (
+            <Menu className="h-6 w-6" aria-hidden="true" />
+          )}
         </button>
       </nav>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden glass-strong animate-fade-in">
-          <div className="container mx-auto px-6 py-6 flex flex-col gap-4">
-            {navLinks.map((link, index) => (
+      {isMenuOpen && (
+        <div
+          id="mobile-menu"
+          className="animate-fade-in border-t border-border md:hidden"
+        >
+          <div className="container mx-auto flex flex-col gap-1 px-4 py-6 sm:px-6">
+            {navLinks.map((link) => (
               <a
-                href={link.href}
-                key={index}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-lg text-muted-foreground hover:text-foreground py-2"
+                key={link.id}
+                href={`#${link.id}`}
+                onClick={() => setIsMenuOpen(false)}
+                aria-current={activeSection === link.id ? "true" : undefined}
+                className={cn(
+                  "rounded-xl px-3 py-3 text-base transition-colors",
+                  activeSection === link.id
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:bg-surface hover:text-foreground"
+                )}
               >
                 {link.label}
               </a>
             ))}
-            {/* <a href="#contact">
-            <Button>
-              Contact Me
+
+            <Button
+              href="#contact"
+              className="mt-3 w-full"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Contact me
             </Button>
-            </a> */}
-            <a href="#contact">
-  <Button>Contact Me</Button>
-</a>
+
+            <div className="mt-5 flex items-center gap-2 border-t border-border pt-5">
+              {socials.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target={social.href.startsWith("http") ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="rounded-full glass p-2.5 text-muted-foreground transition-colors hover:text-primary"
+                >
+                  <social.icon className="h-4 w-4" aria-hidden="true" />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       )}

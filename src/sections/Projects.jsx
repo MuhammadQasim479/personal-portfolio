@@ -1,143 +1,213 @@
-import { ArrowUpRight, Github } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowUpRight, Github, Lock } from "lucide-react";
 import { AnimatedBorderButton } from "@/components/AnimatedBorderButton";
-const projects = [
-  {
-    title: "thokmandee",
-    description:
-      "A full-featured e-commerce solution with inventory management, payment processing, and analytics dashboard.",
-    image: "/projects/thokmande.png",
-    tags: ["Nextjs", "Typescript", "NodeJS"],
-    link: "#",
-    github: "#",
-  },
-  {
-    title: "ILM OVERSEAS",
-    description:"A complete study abroad consultancy platform offering university admissions, visa guidance, scholarship assistance, career counseling, and application support for ambitious international students.",      
-    image: "/projects/imlovrseas.png",
-    tags: ["Next.js",  "Tailwind", "MongoDB"],
-    link: "#",
-    github: "#",
-  },
-  {
-    title: "qlimbup",
-    description:
-      "Create a professional resume quickly and easily, tailored to your skills and career goals. Highlight your strengths, showcase achievements, and stand out to employers in minutes",
-    image: "/projects/project2.2.png",
-    tags: ["React","NextJs", "monorepo"],
-    link: "#",
-    github: "#",
-  },
-  {
-    title: "Prod AI",
-    description:
-      "Comprehensive productivity tools that work together seamlessly, each enhanced by artificial intelligence to help you work smarter.",
-    image: "/projects/prod_AI.png",
-    tags: ["Next.js", "React js" ,"MongoDB" ],
-    link: "#",
-    github: "#",
-  },
-];
+import { Reveal } from "@/components/Reveal";
+import { SectionHeading } from "@/components/SectionHeading";
+import { Tag } from "@/components/Tag";
+import { cn } from "@/utils/cn";
+import { projects, socials } from "@/data/portfolio";
+
+const ALL = "All";
+
+/**
+ * The tags were entered by hand over time, so the same technology appears as
+ * "Nextjs", "Next.js" and "NextJs". Normalising here means the filter groups
+ * them correctly while each card still shows exactly what was typed.
+ */
+const canonicalise = (tag) => {
+  const key = tag.toLowerCase().replace(/[^a-z]/g, "");
+  const aliases = {
+    next: "Next.js",
+    nextjs: "Next.js",
+    react: "React",
+    reactjs: "React",
+    node: "Node.js",
+    nodejs: "Node.js",
+    mongodb: "MongoDB",
+    mongo: "MongoDB",
+    typescript: "TypeScript",
+    tailwind: "Tailwind CSS",
+    tailwindcss: "Tailwind CSS",
+    monorepo: "Monorepo",
+  };
+  return aliases[key] || tag;
+};
+
+const githubProfile = socials.find((social) => social.label === "GitHub")?.href;
 
 export const Projects = () => {
+  const [activeFilter, setActiveFilter] = useState(ALL);
+
+  const filters = useMemo(() => {
+    const unique = new Set(projects.flatMap((p) => p.tags.map(canonicalise)));
+    return [ALL, ...[...unique].sort()];
+  }, []);
+
+  const visibleProjects = useMemo(() => {
+    if (activeFilter === ALL) return projects;
+    return projects.filter((project) =>
+      project.tags.map(canonicalise).includes(activeFilter)
+    );
+  }, [activeFilter]);
+
   return (
-    <section id="projects" className="py-20 relative overflow-hidden">
-      {/* Bg glows */}
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 left-0 w-64 h-64 bg-highlight/5 rounded-full blur-3xl" />
-      <div className="container mx-auto px-6 relative z-10">
-        {/* Section Header */}
-        <div className="text-center mx-auto max-w-3xl mb-16">
-          <span className="text-secondary-foreground text-sm font-medium tracking-wider uppercase animate-fade-in">
-            Featured Work
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-6 animate-fade-in animation-delay-100 text-secondary-foreground">
-            Projects that
-            <span className="font-serif italic font-normal text-white">
-              {" "}
-              make an impact.
-            </span>
-          </h2>
-          <p className="text-muted-foreground animate-fade-in animation-delay-200">
-            A selection of my recent work, from complex web applications to
-            innovative tools that solve real-world problems.
-          </p>
-        </div>
+    <section
+      id="projects"
+      className="relative scroll-mt-24 overflow-hidden py-24 sm:py-28 md:py-32"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-0 top-1/4 h-96 w-96 rounded-full bg-primary/[0.05] blur-[120px]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-1/4 left-0 h-64 w-64 rounded-full bg-highlight/[0.05] blur-[120px]"
+      />
 
-        {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {projects.map((project, idx) => (
-            <div
-              key={idx}
-              className="group glass rounded-2xl overflow-hidden animate-fade-in md:row-span-1"
-              style={{ animationDelay: `${(idx + 1) * 100}ms` }}
-            >
-              {/* Image */}
-              <div className="relative overflow-hidden aspect-video">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div
-                  className="absolute inset-0 
-                bg-gradient-to-t from-card via-card/50
-                 to-transparent opacity-60"
-                />
-                {/* Overlay Links */}
-                <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <a
-                    href={project.link}
-                    className="p-3 rounded-full glass hover:bg-primary hover:text-primary-foreground transition-all"
-                  >
-                    <ArrowUpRight className="w-5 h-5" />
-                  </a>
-                  <a
-                    href={project.github}
-                    className="p-3 rounded-full glass hover:bg-primary hover:text-primary-foreground transition-all"
-                  >
-                    <Github className="w-5 h-5" />
-                  </a>
-                </div>
-              </div>
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
+        <SectionHeading
+          eyebrow="Featured work"
+          title="Projects that"
+          accent="make an impact."
+          description="A selection of my recent work, from complex web applications to innovative tools that solve real-world problems."
+          align="center"
+        />
 
-              {/* Content */}
-              <div className="p-6 space-y-4">
-                <div className="flex items-start justify-between">
-                  <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">
-                    {project.title}
-                  </h3>
-                  <ArrowUpRight
-                    className="w-5 h-5 
-                  text-muted-foreground group-hover:text-primary
-                   group-hover:translate-x-1 
-                   group-hover:-translate-y-1 transition-all"
+        {/* Filters */}
+        <Reveal delay={200} className="mt-12">
+          <div
+            role="group"
+            aria-label="Filter projects by technology"
+            className="flex flex-wrap justify-center gap-2"
+          >
+            {filters.map((filter) => {
+              const isActive = filter === activeFilter;
+              return (
+                <button
+                  key={filter}
+                  type="button"
+                  onClick={() => setActiveFilter(filter)}
+                  aria-pressed={isActive}
+                  className={cn(
+                    "rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.1em] transition-all duration-300",
+                    isActive
+                      ? "border-primary/60 bg-primary/10 text-primary"
+                      : "border-border bg-surface/50 text-muted-foreground hover:border-border-strong hover:text-foreground"
+                  )}
+                >
+                  {filter}
+                </button>
+              );
+            })}
+          </div>
+        </Reveal>
+
+        {/* Grid */}
+        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+          {visibleProjects.map((project, index) => {
+            const hasLinks = Boolean(project.link || project.github);
+
+            return (
+              <Reveal
+                key={project.title}
+                as="article"
+                delay={index * 100}
+                className="group card-sheen overflow-hidden rounded-2xl glass transition-colors duration-500 hover:border-primary/40"
+              >
+                <div className="relative aspect-video overflow-hidden bg-surface">
+                  <img
+                    src={project.image}
+                    alt={`${project.title} interface screenshot`}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
                   />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent opacity-70"
+                  />
+
+                  {/* Overlay actions only render for links that exist — the
+                      old version always showed two buttons pointing at "#". */}
+                  {hasLinks && (
+                    <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 focus-within:opacity-100">
+                      {project.link && (
+                        <a
+                          href={project.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Open the ${project.title} live site`}
+                          className="rounded-full glass p-3 transition-all hover:bg-primary hover:text-primary-foreground"
+                        >
+                          <ArrowUpRight className="h-5 w-5" aria-hidden="true" />
+                        </a>
+                      )}
+                      {project.github && (
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`View the ${project.title} source on GitHub`}
+                          className="rounded-full glass p-3 transition-all hover:bg-primary hover:text-primary-foreground"
+                        >
+                          <Github className="h-5 w-5" aria-hidden="true" />
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <p className="text-muted-foreground text-sm">
-                  {project.description}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {project.tags.map((tag, tagIdx) => (
-                    <span
-                      key={tagIdx}
-                      className="px-4 py-1.5 rounded-full bg-surface text-xs font-medium border border-border/50 text-muted-foreground hover:border-primary/50 hover:text-primary transition-all duration-300"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+
+                <div className="space-y-4 p-6">
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="text-lg font-semibold tracking-tight transition-colors group-hover:text-primary">
+                      {project.title}
+                    </h3>
+                    {hasLinks ? (
+                      <ArrowUpRight
+                        className="h-5 w-5 shrink-0 text-muted-foreground transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-primary"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border/60 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-subtle-foreground">
+                        <Lock className="h-3 w-3" aria-hidden="true" />
+                        Private
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {project.description}
+                  </p>
+
+                  <ul className="flex flex-wrap gap-2 pt-1">
+                    {project.tags.map((tag) => (
+                      <li key={tag}>
+                        <Tag>{tag}</Tag>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-            </div>
-          ))}
+              </Reveal>
+            );
+          })}
         </div>
 
-        {/* View All CTA */}
-        <div className="text-center mt-12 animate-fade-in animation-delay-500">
-          <AnimatedBorderButton>
-            View All Projects
-            <ArrowUpRight className="w-5 h-5" />
+        {visibleProjects.length === 0 && (
+          <p className="mt-12 text-center text-sm text-muted-foreground">
+            No projects tagged {activeFilter} yet. Try another filter.
+          </p>
+        )}
+
+        <Reveal delay={200} className="mt-12 text-center">
+          <AnimatedBorderButton
+            href={githubProfile}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            More on GitHub
+            <ArrowUpRight className="h-5 w-5" aria-hidden="true" />
           </AnimatedBorderButton>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

@@ -1,137 +1,110 @@
-const experiences = [
-  {
-    period: "2026 — Present",
-    role: "Senior Frontend Engineer",
-    company: "Byte Scripters.",
-    description:
-      "Leading frontend architecture for a suite of fintech products. Implemented micro-frontend architecture, reduced bundle size by 40%, and mentored a team of 5 developers.",
-    technologies: ["React", "TypeScript", "Next.js", "Node.js"],
-    current: true,
-  },
-  {
-    period: "2025 — 2026",
-    role: "Frontend Engineer",
-    company: "Code Scrapper.",
-    description:
-      "Built and maintained multiple React applications for enterprise clients. Introduced automated testing practices that improved code coverage to 85%.",
-    technologies: ["React", "Redux", "Tailwind css", ],
-    current: false,
-  },
-  {
-    period: "2024 - 2025",
-    role: "Junior Developer",
-    company: "Xemen Technology",
-    description:
-      "Contributed to the development of a SaaS platform from MVP to production. Collaborated with designers to implement pixel-perfect UI components.",
-    technologies: ["React", "JavaScript" , "MongoDB", ],
-    current: false,
-  },
-  // {
-  //   period: "2018 — 2019",
-  //   role: "Freelance Developer",
-  //   company: "Self-Employed",
-  //   description:
-  //     "Delivered custom web solutions for small businesses and startups. Built 15+ websites and applications, handling everything from design to deployment.",
-  //   technologies: ["JavaScript", "PHP", "WordPress", "MySQL"],
-  //   current: false,
-  // },
-];
+import { Reveal } from "@/components/Reveal";
+import { SectionHeading } from "@/components/SectionHeading";
+import { Tag } from "@/components/Tag";
+import { cn } from "@/utils/cn";
+import { experiences } from "@/data/portfolio";
 
+/**
+ * Career timeline. Rendered as an ordered list because the order is the
+ * information — reverse chronology is what makes it a career rather than a
+ * collection of jobs.
+ */
 export const Experience = () => {
   return (
-    <section id="experience" className="py-20 relative overflow-hidden">
+    <section
+      id="experience"
+      className="relative scroll-mt-24 overflow-hidden py-24 sm:py-28 md:py-32"
+    >
       <div
-        className="absolute top-1/2 left-1/4 w-96
-       h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2"
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/4 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-primary/[0.05] blur-[120px]"
       />
 
-      <div className="container mx-auto px-6 relative z-10">
-        {/* Section Header */}
-        <div className="max-w-3xl mb-16">
-          <span
-            className="text-secondary-foreground text-sm
-           font-medium tracking-wider uppercase animate-fade-in"
-          >
-            Career Journey
-          </span>
-          <h2
-            className="text-4xl md:text-5xl font-bold
-           mt-4 mb-6 animate-fade-in animation-delay-100
-            text-secondary-foreground"
-          >
-            Experience that{" "}
-            <span className="font-serif italic font-normal text-white">
-              {" "}
-              speaks volumes.
-            </span>
-          </h2>
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
+        <SectionHeading
+          eyebrow="Career journey"
+          title="Experience that"
+          accent="speaks volumes."
+          description="A timeline of my professional growth, from curious beginner to senior engineer leading teams and building products at scale."
+        />
 
-          <p
-            className="text-muted-foreground
-           animate-fade-in animation-delay-200"
-          >
-            A timeline of my professional growth, from curious beginner to
-            senior engineer leading teams and building products at scale.
-          </p>
-        </div>
+        <div className="relative mt-16">
+          <div
+            aria-hidden="true"
+            className="timeline-glow absolute bottom-0 left-[7px] top-0 w-px bg-gradient-to-b from-primary/70 via-primary/25 to-transparent md:left-1/2 md:-translate-x-1/2"
+          />
 
-        {/* Timeline */}
-        <div className="relative">
-          <div className="timeline-glow absolute left-0 md:left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/70 via-primary/30 to-transparent md:-translate-x-1/2 shadow-[0_0_25px_rgba(32,178,166,0.8)]" />
+          <ol className="space-y-10 md:space-y-12">
+            {experiences.map((exp, index) => {
+              const isLeft = index % 2 === 0;
 
-          {/* Experience Items */}
-          <div className="space-y-12">
-            {experiences.map((exp, idx) => (
-              <div
-                key={idx}
-                className="relative grid md:grid-cols-2 gap-8 animate-fade-in"
-                style={{ animationDelay: `${(idx + 1) * 150}ms` }}
-              >
-                {/* Timeline Dot */}
-                <div className="absolute left-0 md:left-1/2 top-0 w-3 h-3 bg-primary rounded-full -translate-x-1/2 ring-4 ring-background z-10">
-                  {exp.current && (
-                    <span className="absolute inset-0 rounded-full bg-primary animate-ping opacity-75" />
-                  )}
-                </div>
-
-                {/* Content */}
-                <div
-                  className={`pl-8 md:pl-0 ${
-                    idx % 2 === 0
-                      ? "md:pr-16 md:text-right"
-                      : "md:col-start-2 md:pl-16"
-                  }`}
+              return (
+                <li
+                  key={`${exp.company}-${exp.period}`}
+                  className="relative grid grid-cols-1 gap-8 md:grid-cols-2"
                 >
-                  <div
-                    className={`glass p-6 rounded-2xl border border-primary/30 hover:border-primary/50 transition-all duration-500`}
+                  {/* Node */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute left-0 top-0 z-10 h-3.5 w-3.5 rounded-full bg-primary ring-4 ring-background md:left-1/2 md:-translate-x-1/2"
                   >
-                    <span className="text-sm text-primary font-medium">
-                      {exp.period}
-                    </span>
-                    <h3 className="text-xl font-semibold mt-2">{exp.role}</h3>
-                    <p className="text-muted-foreground">{exp.company}</p>
-                    <p className="text-sm text-muted-foreground mt-4">
-                      {exp.description}
-                    </p>
-                    <div
-                      className={`flex flex-wrap gap-2 mt-4 ${
-                        idx % 2 === 0 ? "md:justify-end" : ""
-                      }`}
-                    >
-                      {exp.technologies.map((tech, techIdx) => (
-                        <span
-                          key={techIdx}
-                          className="px-3 py-1 bg-surface text-xs rounded-full text-muted-foreground"
-                        >
-                          {tech}
+                    {exp.current && (
+                      <span className="absolute inset-0 animate-ping rounded-full bg-primary opacity-70" />
+                    )}
+                  </span>
+
+                  <Reveal
+                    delay={index * 120}
+                    className={cn(
+                      "pl-9 md:pl-0",
+                      isLeft ? "md:pr-14 md:text-right" : "md:col-start-2 md:pl-14"
+                    )}
+                  >
+                    <div className="card-sheen group rounded-2xl glass p-6 transition-colors duration-500 hover:border-primary/45">
+                      <div
+                        className={cn(
+                          "flex flex-wrap items-center gap-2.5",
+                          isLeft && "md:justify-end"
+                        )}
+                      >
+                        <span className="font-mono text-xs tracking-wide text-primary">
+                          {exp.period}
                         </span>
-                      ))}
+                        {exp.current && (
+                          <span className="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-primary">
+                            Current
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="mt-3 text-lg font-semibold tracking-tight">
+                        {exp.role}
+                      </h3>
+                      <p className="mt-0.5 text-sm text-muted-foreground">
+                        {exp.company}
+                      </p>
+                      <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                        {exp.description}
+                      </p>
+
+                      <ul
+                        className={cn(
+                          "mt-5 flex flex-wrap gap-1.5",
+                          isLeft && "md:justify-end"
+                        )}
+                      >
+                        {exp.technologies.map((tech) => (
+                          <li key={tech}>
+                            <Tag size="sm">{tech}</Tag>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                  </Reveal>
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </div>
     </section>
